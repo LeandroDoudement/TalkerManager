@@ -10,4 +10,15 @@ async function readTalkerData() {
   }
 }
 
-module.exports = { readTalkerData };
+const getAllTalkers = async () => {
+  const data = await readTalkerData();
+  return data;
+};
+
+const getTalkersById = async (id) => {
+  const data = await readTalkerData();
+  const talker = data.find((element) => element.id === Number(id));
+  return talker;
+};
+
+module.exports = { getAllTalkers, getTalkersById };
