@@ -4,6 +4,13 @@ const router = express.Router();
 
 const { getAllTalkers, getTalkersById } = require('../utils/fsTalker');
 
+const {
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+} = require('../middlewares/talkerValidation');
+
 router.get('/', async (_req, res) => {
   try {
     const result = await getAllTalkers();
@@ -29,5 +36,17 @@ router.get('/:id', async (req, res) => {
     return res.status(500).json(error.message);
   }
 });
+
+router.post(
+  '/',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  (req, res) => {
+    const talker = req.body;
+    return res.status(201).json(talker);
+  },
+);
 
 module.exports = router;
