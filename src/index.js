@@ -7,6 +7,7 @@ const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 
 const talkerRouter = require('./routes/talkerRouter');
+const loginRouter = require('./routes/loginRouter');
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
@@ -18,3 +19,4 @@ app.listen(PORT, () => {
 });
 
 app.use('/talker', talkerRouter);
+app.use('/login', loginRouter);
