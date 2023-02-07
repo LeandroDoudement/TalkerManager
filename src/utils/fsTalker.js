@@ -21,7 +21,7 @@ const getTalkersById = async (id) => {
   return talker;
 };
 
-async function writeTalkerData(newTalker) {
+const writeTalkerData = async (newTalker) => {
   try {
     const existingData = await fs.readFile(path.resolve(__dirname, '..', 'talker.json'), 'utf-8');
     const parsedData = JSON.parse(existingData);
@@ -31,6 +31,6 @@ async function writeTalkerData(newTalker) {
   } catch (err) {
     console.error(`Error reading file: ${err.message}`);
   }
-}
+};
 
 module.exports = { getAllTalkers, getTalkersById, writeTalkerData };

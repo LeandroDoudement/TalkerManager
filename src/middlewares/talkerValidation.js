@@ -41,25 +41,51 @@ const validateAge = (req, res, next) => {
     next();
   };
 
-const validateTalk = (req, res, next) => {
-  const { talk, watchedAt, rate } = req.body;
-  const dateRegex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
-
-  const validate = (condition, errorMessage) => {
-    if (!condition) return res.status(400).json({ message: errorMessage });
+  const validateTalk = (req, res, next) => {
+    const { talk } = req.body;
+  
+    if (!talk) return res.status(400).json({ message: 'O campo "talk" é obrigatório' });
+  
+    next();
   };
 
-  validate(talk, 'O campo "talk" é obrigatório');
-  validate(watchedAt, 'O campo "watchedAt" é obrigatório');
-  validate(
-    dateRegex.test(watchedAt), 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"',
-    );
-  validate(rate, 'O campo "rate" é obrigatório');
-  validate(
-    Number.isInteger(rate) && (rate > 1 && rate < 5), 'O campo "rate" deve ser um inteiro de 1 à 5',
-    );
+  const validateWatchedAt = (req, res, next) => {
+    const { talk } = req.body;
+    const { watchedAt } = talk;
+    const dateRegex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+  
+    if (!watchedAt) return res.status(400).json({ message: 'O campo "watchedAt" é obrigatório' });
+    if (!dateRegex.test(watchedAt)) {
+      return res.status(400)
+      .json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
+    }
+  
+    next();
+  };
 
-  next();
-};
+  const validateRate = (req, res, next) => {
+    const { talk } = req.body;
+    const { rate } = talk;
+    if (rate === undefined || rate === '') {
+        return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
+    } 
+    next();
+  };
 
-module.exports = { validateToken, validateName, validateAge, validateTalk };
+  const validateRateValue = (req, res, next) => {
+    const { talk } = req.body;
+    const { rate } = talk;
+    if (rate < 1 || rate > 5 || !Number.isInteger(rate)) {
+        return res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
+    }
+    next(); 
+  };
+
+module.exports = { 
+    validateToken,
+    validateName,
+    validateAge,
+    validateTalk,
+    validateWatchedAt,
+    validateRate,
+    validateRateValue };

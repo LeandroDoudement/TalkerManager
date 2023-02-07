@@ -2,13 +2,16 @@ const express = require('express');
 
 const router = express.Router();
 
-const { getAllTalkers, getTalkersById } = require('../utils/fsTalker');
+const { getAllTalkers, getTalkersById, writeTalkerData } = require('../utils/fsTalker');
 
 const {
   validateToken,
   validateName,
   validateAge,
   validateTalk,
+  validateWatchedAt,
+  validateRate,
+  validateRateValue,
 } = require('../middlewares/talkerValidation');
 
 router.get('/', async (_req, res) => {
@@ -43,9 +46,28 @@ router.post(
   validateName,
   validateAge,
   validateTalk,
-  (req, res) => {
-    const talker = req.body;
-    return res.status(201).json(talker);
+  validateWatchedAt,
+  validateRate,
+  validateRateValue,
+  async (req, res) => {
+    const { name, age, talk } = req.body;
+    const { watchedAt, rate } = talk;
+    try {
+      const existingData = await getAllTalkers();
+      const newTalker = {
+        name,
+        age,
+        id: existingData.length + 1,
+        talk: {
+          watchedAt,
+          rate,
+        },
+      };
+      await writeTalkerData(newTalker);
+      return res.status(201).json(newTalker);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
   },
 );
 
