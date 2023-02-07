@@ -33,4 +33,15 @@ const writeTalkerData = async (newTalker) => {
   }
 };
 
-module.exports = { getAllTalkers, getTalkersById, writeTalkerData };
+const editTalkerData = async (newTalker, id) => {
+  try {
+      const existingData = await getAllTalkers();
+      const index = existingData.findIndex((element) => element.id === Number(id));
+      existingData[index] = newTalker;
+      await writeTalkerData(newTalker);
+  } catch (error) {
+    console.error(`Error reading file: ${error.message}`);
+  }
+};
+
+module.exports = { getAllTalkers, getTalkersById, writeTalkerData, editTalkerData };
