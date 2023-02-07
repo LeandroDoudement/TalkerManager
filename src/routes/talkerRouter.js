@@ -2,7 +2,12 @@ const express = require('express');
 
 const router = express.Router();
 
-const { getAllTalkers, getTalkersById, writeTalkerData, editTalkerData } = require('../utils/fsTalker');
+const { 
+  getAllTalkers, 
+  getTalkersById, 
+  writeTalkerData, 
+  editTalkerData,
+  deleteTalkerData } = require('../utils/fsTalker');
 
 const {
   validateToken,
@@ -101,5 +106,20 @@ router.put(
     }
   },
 );
+
+router.delete('/:id', validateToken, async (req, res) => {
+  try {
+  const { id } = req.params;
+  const currentData = await getAllTalkers();
+  const doesIdExist = currentData.some((element) => element.id === Number(id));
+  if (!doesIdExist) {
+    return res.status(404).json({ message: 'ID não encontrado' });
+  }
+  await deleteTalkerData(id);
+  return res.status(204).json();
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 module.exports = router;

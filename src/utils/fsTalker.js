@@ -3,7 +3,10 @@ const path = require('path');
 
 async function readTalkerData() {
   try {
-    const data = await fs.readFile(path.resolve(__dirname, '..', 'talker.json'), 'utf-8');
+    const data = await fs.readFile(
+      path.resolve(__dirname, '..', 'talker.json'),
+      'utf-8',
+    );
     return JSON.parse(data);
   } catch (err) {
     console.error(`Erro ao ler o arquivo: ${err.message}`);
@@ -23,11 +26,18 @@ const getTalkersById = async (id) => {
 
 const writeTalkerData = async (newTalker) => {
   try {
-    const existingData = await fs.readFile(path.resolve(__dirname, '..', 'talker.json'), 'utf-8');
+    const existingData = await fs.readFile(
+      path.resolve(__dirname, '..', 'talker.json'),
+      'utf-8',
+    );
     const parsedData = JSON.parse(existingData);
     parsedData.push(newTalker);
     const updatedData = JSON.stringify(parsedData);
-    await fs.writeFile(path.resolve(__dirname, '..', 'talker.json'), updatedData, 'utf-8');
+    await fs.writeFile(
+      path.resolve(__dirname, '..', 'talker.json'),
+      updatedData,
+      'utf-8',
+    );
   } catch (err) {
     console.error(`Error reading file: ${err.message}`);
   }
@@ -35,13 +45,35 @@ const writeTalkerData = async (newTalker) => {
 
 const editTalkerData = async (newTalker, id) => {
   try {
-      const existingData = await getAllTalkers();
-      const index = existingData.findIndex((element) => element.id === Number(id));
-      existingData[index] = newTalker;
-      await writeTalkerData(newTalker);
+    const existingData = await getAllTalkers();
+    const index = existingData.findIndex(
+      (element) => element.id === Number(id),
+    );
+    existingData[index] = newTalker;
+    await writeTalkerData(newTalker);
   } catch (error) {
     console.error(`Error reading file: ${error.message}`);
   }
 };
 
-module.exports = { getAllTalkers, getTalkersById, writeTalkerData, editTalkerData };
+const deleteTalkerData = async (id) => {
+  try {
+    const existingData = await getAllTalkers();
+    const newData = existingData.filter((element) => element.id !== Number(id));
+    await fs.writeFile(
+      path.resolve(__dirname, '..', 'talker.json'),
+      JSON.stringify(newData),
+      'utf-8',
+    );
+  } catch (error) {
+    console.error(`Error reading file: ${error.message}`);
+  }
+};
+
+module.exports = {
+  getAllTalkers,
+  getTalkersById,
+  writeTalkerData,
+  editTalkerData,
+  deleteTalkerData,
+};
