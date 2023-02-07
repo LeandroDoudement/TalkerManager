@@ -70,10 +70,17 @@ const deleteTalkerData = async (id) => {
   }
 };
 
+const searchTalkers = async (searchTerm) => {
+  const existingData = await getAllTalkers();
+  const searchedTalkers = existingData.filter((element) => element.name.includes(searchTerm));
+  return searchedTalkers;
+};
+
 module.exports = {
   getAllTalkers,
   getTalkersById,
   writeTalkerData,
   editTalkerData,
   deleteTalkerData,
+  searchTalkers,
 };

@@ -7,7 +7,8 @@ const {
   getTalkersById, 
   writeTalkerData, 
   editTalkerData,
-  deleteTalkerData } = require('../utils/fsTalker');
+  deleteTalkerData, 
+  searchTalkers } = require('../utils/fsTalker');
 
 const {
   validateToken,
@@ -19,10 +20,19 @@ const {
   validateRateValue,
 } = require('../middlewares/talkerValidation');
 
+router.get('/search', validateToken, async (req, res) => {
+  const { q } = req.query;
+  if (!q || q === '') {
+    const currentData = await getAllTalkers();
+    return res.status(200).json(currentData);
+  }
+  const searchedTalkers = await searchTalkers(q);
+  return res.status(200).json(searchedTalkers);
+});
+
 router.get('/', async (_req, res) => {
   try {
     const result = await getAllTalkers();
-    console.log(result);
     if (result.length === 0) return res.status(200).json([]);
     return res.status(200).json(result);
   } catch (error) {
@@ -121,5 +131,4 @@ router.delete('/:id', validateToken, async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
-
 module.exports = router;
